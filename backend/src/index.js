@@ -9,7 +9,7 @@ import borrowBookRouter from './routes/borrowBook.route.js';
 import authRouter from './routes/auth.route.js';
 import swaggerUi from 'swagger-ui-express';
 import swaggerJSDoc from 'swagger-jsdoc';
-import 'dotenv/config'
+import 'dotenv/config';
 
 const init = () => {
 

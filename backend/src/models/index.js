@@ -2,6 +2,7 @@ import sequelize from "../utils/database.js";
 import book from "./books.js";
 import borrowedBook from "./borrowed_books.js";
 import user from "./users.js";
+import bcrypt from 'bcrypt';
 
 const User = sequelize.define('User', user, {
    tableName: 'users',
@@ -48,6 +49,29 @@ Book.hasMany(BorrowedBook, {
    onDelete: 'RESTRICT'
 })
 
-sequelize.sync({alter: true});
+User.afterSync('seeds', async () => {
+   User.findOrCreate(
+      {
+         where: {
+            username: 'admin'
+         },
+         defaults: {
+
+            username: 'admin',
+            password: await bcrypt.hash('1234', Number(process.env.PASSWORD_SALT)),
+            name: 'Administrator',
+            code: 'admin',
+            role: 'admin',
+            code_number: 0
+         }
+      }
+   ).then(result => {
+      console.log('Success seeds administrator account');
+   }).catch(err => {
+      console.log(err.message);
+   })
+})
+
+sequelize.sync({ alter: true });
 
 export default sequelize;

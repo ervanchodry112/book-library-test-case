@@ -1,5 +1,6 @@
 import db from '../models/index.js';
 import CodeGenerator from 'node-code-generator';
+import { Op } from 'sequelize';
 
 const getAllBook = (req, res) => {
    db.models.Book.findAll({
@@ -69,15 +70,17 @@ const createBook = (req, res) => {
 
    const generator = new CodeGenerator();
 
-   const { author, title, stock } = validated.data;
+   const { author, title, stock, code } = validated.data;
 
-   const code = generator.generateCodes('*****###', 1)[0];
+
+   const secode = generator.generateCodes('**-##', 1)[0];
+
 
    db.models.Book.create({
       title: title,
       author: author,
       stock: stock,
-      code: code,
+      code: code === undefined ? secode : code,
    }).then(result => {
       res.status(201).send({
          status: 'success',

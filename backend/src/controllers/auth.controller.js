@@ -2,7 +2,7 @@ import db from '../models/index.js';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
-const login = async (req, res) => {
+const login = (req, res) => {
    const { username, password } = req.body;
 
    if (!username) {

@@ -61,10 +61,9 @@ const getUserById = (req, res) => {
 }
 
 const saveUser = async (req, res) => {
-   const generator = new CodeGenerator();
    const { username, password, name, role } = req.body;
 
-   const result = db.models.User.findOne({
+   const result = await db.models.User.findOne({
       where: {
          username: username
       }
@@ -73,31 +72,40 @@ const saveUser = async (req, res) => {
    if (result) {
       res.status(404).send({
          status: 'fail',
-         message: 'User not found',
+         message: 'User already exists',
          data: []
       });
       return;
    }
 
-   const hashed = await bcrypt.hash(password, Number(process.env.PASSWORD_SALT));
+   db.models.User.max('code_number')
+      .then(async (max_number) => {
+         let member_code = 'M';
 
-   const code = generator.generateCodes('***###', 1)[0];
+         let code_number = (max_number === undefined ? 1 : max_number + 1);
+         for (let i = 0; i < 5 - code_number.toString().length; i++) {
+            member_code += '0';
+         }
+         member_code += code_number;
 
-   db.models.User.create({
-      name: name,
-      username: username,
-      password: hashed,
-      code: code,
-      role: (!role ? 'member' : role)
-   })
-      .then(result => {
-         res.status(201).send({
-            status: 'success',
-            message: 'Success to create user',
-            data: result
-         });
-      })
-      .catch(err => {
+         const hashed = await bcrypt.hash(password, Number(process.env.PASSWORD_SALT));
+
+         db.models.User.create({
+            name: name,
+            username: username,
+            password: hashed,
+            code: member_code,
+            role: (!role ? 'member' : role),
+            code_number: code_number,
+         })
+            .then(result => {
+               res.status(201).send({
+                  status: 'success',
+                  message: 'Success to create user',
+                  data: result
+               });
+            })
+      }).catch(err => {
          res.status(500).send({
             status: 'fail',
             message: err.message,

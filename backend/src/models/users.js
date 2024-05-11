@@ -138,6 +138,10 @@ const User = {
       type: DataTypes.ENUM,
       values: ['admin', 'member'],
       defaultValue: 'member'
+   },
+   code_number: {
+      type: DataTypes.INTEGER,
+      allowNull: true
    }
 };
 

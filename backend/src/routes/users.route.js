@@ -1,5 +1,6 @@
 import express from 'express';
 import usersController from '../controllers/users.controller.js';
+import isAdmin from '../middlewares/admin.middleware.js';
 
 const router = express.Router();
 
@@ -38,7 +39,7 @@ const router = express.Router();
  *          500:
  *             description: Internal Server Error
  */
-router.get('/', usersController.getAllUsers);
+router.get('/', isAdmin, usersController.getAllUsers);
 
 /**
  * @openapi
@@ -110,7 +111,7 @@ router.get('/:id', usersController.getUserById);
  *                            type: object
  *                            
  */   
-router.post('/', usersController.saveUser);
+router.post('/', isAdmin, usersController.saveUser);
 
 /**
  * @openapi
@@ -200,6 +201,6 @@ router.put('/:id', usersController.updateUser);
  *                 data:
  *                   type: object
  */
-router.delete('/:id', usersController.deleteUserByID);
+router.delete('/:id', isAdmin, usersController.deleteUserByID);
 
 export default router;

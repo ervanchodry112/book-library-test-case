@@ -1,5 +1,6 @@
 import express from 'express';
 import booksController from '../controllers/books.controller.js';
+import isAdmin from '../middlewares/admin.middleware.js';
 
 const router = express.Router();
 
@@ -110,7 +111,7 @@ router.get('/:id', booksController.getBookById);
  *                            type: object
  *                            
  */
-router.post('/', booksController.createBook);
+router.post('/', isAdmin, booksController.createBook);
 
 
 /**
@@ -162,7 +163,7 @@ router.post('/', booksController.createBook);
  *                 data:
  *                   type: object
  */
-router.put('/:id', booksController.updateBook);
+router.put('/:id', isAdmin, booksController.updateBook);
 
 
 /**
@@ -208,6 +209,6 @@ router.put('/:id', booksController.updateBook);
  *                 data:
  *                   type: object
  */
-router.delete('/:id', booksController.deleteBookById);
+router.delete('/:id', isAdmin, booksController.deleteBookById);
 
 export default router;

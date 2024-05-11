@@ -111,6 +111,7 @@ const User = {
    username: {
       type: DataTypes.STRING,
       allowNull: false,
+      unique: true
    },
    password: {
       type: DataTypes.STRING,
@@ -128,6 +129,10 @@ const User = {
    penalty: {
       type: DataTypes.BOOLEAN,
       defaultValue: false,
+   },
+   penalty_end: {
+      type: DataTypes.DATEONLY,
+      allowNull: true
    },
    role: {
       type: DataTypes.ENUM,

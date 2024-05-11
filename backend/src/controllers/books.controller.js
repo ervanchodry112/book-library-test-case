@@ -2,7 +2,13 @@ import db from '../models/index.js';
 import CodeGenerator from 'node-code-generator';
 
 const getAllBook = (req, res) => {
-   db.models.Book.findAll()
+   db.models.Book.findAll({
+      where: {
+         stock: {
+            [Op.not]: null
+         }
+      }
+   })
       .then(result => {
          res.status(200).send({
             status: 'success',

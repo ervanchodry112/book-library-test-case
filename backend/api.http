@@ -1,0 +1,35 @@
+
+@hostname = http://localhost:3000/api
+@header = Accept: application/json
+@bearerToken = Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjoiVGVzdCBVc2VyIiwiaWF0IjoxNzE1MzU0MTkyLCJleHAiOjE3MTUzNjQ5OTJ9.KvWLGxyRxXPhBSfwFfVXUfGKANTxSygaisfkYMxGAjg
+
+### Login
+POST {{hostname}}/auth
+Content-Type: application/json
+Accept: application/json
+
+{
+   "username": "test",
+   "password": "1234"
+}
+
+### Get All User
+GET {{hostname}}/users
+Accept: application/json
+Authorization: {{bearerToken}}
+
+### Get User by ID
+GET {{hostname}}/users/1
+Accept: application/json
+Authorization: {{bearerToken}}
+
+### Insert Tes
+POST {{hostname}}/users
+Content-Type: application/json
+Accept: application/json
+Authorization: {{bearerToken}}
+
+{
+   "name": "json"
+}
+

@@ -91,7 +91,6 @@ const borrowBook = async (req, res) => {
             data: borrowResult
          });
       });
-
    }).catch(err => {
       res.status(500).send({
          status: 'fail',
@@ -101,4 +100,79 @@ const borrowBook = async (req, res) => {
    })
 }
 
-export default { borrowBook };
+const returnBook = async (req, res) => {
+   const user = req.user;
+   const { book_id } = req.body;
+   const borrowedBook = await db.models.BorrowedBook.findOne({
+      where: {
+         user_id: user.id,
+         book_id: book_id,
+         returned_at: {
+            [Op.is]: null
+         }
+      },
+   });
+
+   if (!borrowedBook) {
+      res.status(404).send({
+         status: 'fail',
+         message: 'You are not borrowed this book',
+         data: []
+      });
+   }
+
+   const status = new Date(borrowedBook.deadline) < new Date();
+   let penalty = false;
+   let penalty_end = null;
+
+   if (status) {
+      penalty = true;
+      penalty_end = new Date(new Date().setDate(new Date().getDate() + 3));
+   }
+
+   const book = await db.models.Book.findOne({
+      where: {
+         id: book_id
+      }
+   });
+
+   db.models.BorrowedBook.update(
+      {
+         returned_at: new Date(),
+         penalty: penalty,
+         penalty_end: penalty_end,
+      },
+      {
+         where: {
+            id: borrowedBook.id
+         }
+      }
+   ).then(result => {
+      db.models.Book.update(
+         {
+            stock: book.stock + 1
+         },
+         {
+            where: {
+               id: book.id
+            }
+         }
+      ).then(updateBookResult => {
+         res.status(200).send({
+            status: 'success',
+            message: 'Book is returned!' + (status ? 'The return is past due, you cannot borrow books for the next three days' : ''),
+            data: borrowedBook,
+         });
+      });
+   }).catch(err => {
+      res.status(500).send({
+         status: 'fail',
+         message: err.message,
+         data: []
+      })
+   })
+
+
+}
+
+export default { borrowBook, returnBook };

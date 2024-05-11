@@ -48,6 +48,6 @@ Book.hasMany(BorrowedBook, {
    onDelete: 'RESTRICT'
 })
 
-sequelize.sync();
+sequelize.sync({alter: true});
 
 export default sequelize;

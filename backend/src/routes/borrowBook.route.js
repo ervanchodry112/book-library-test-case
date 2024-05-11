@@ -83,4 +83,37 @@ const router = express.Router();
  */
 router.post('/', borrowBookController.borrowBook);
 
+/**
+ * @openapi
+ * /api/borrow-book/return:
+ *   post:
+ *    summary: Return book that have been borrowed
+ *    tags: [Borrow Book]
+ *    requestBody:
+ *     required: true
+ *     content:
+ *      application/json:
+ *       schema:
+ *        type: object
+ *        properties:
+ *         book_id:
+ *          type: string
+ *    responses:
+ *     200:
+ *       description: Success to return book
+ *       content:
+ *        application/json:
+ *         schema:
+ *          type: object
+ *          properties:
+ *           status:
+ *            type: string
+ *            default: 'success'
+ *           message:
+ *            type: string
+ *           data:
+ *            type: object
+ */
+router.post('/return', borrowBookController.returnBook);
+
 export default router;
